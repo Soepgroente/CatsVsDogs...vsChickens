@@ -119,6 +119,28 @@ make run
 make clean
 ```
 
+## Shaders
+
+The project includes example GLSL shaders in the `shaders/` directory:
+- `basic.vert/frag`: Basic 3D rendering with simple lighting
+- `grid.vert/frag`: Ground grid rendering for spatial reference
+
+### Compiling Shaders
+
+Shaders must be compiled to SPIR-V before use:
+
+```bash
+./compile_shaders.sh
+```
+
+Or manually:
+```bash
+glslc shaders/basic.vert -o shaders/basic.vert.spv
+glslc shaders/basic.frag -o shaders/basic.frag.spv
+```
+
+Note: `glslc` comes with the Vulkan SDK.
+
 ## Controls
 
 | Input | Action |

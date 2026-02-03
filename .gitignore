@@ -43,6 +43,9 @@
 # Build directory
 build/
 
+# Compiled shaders (SPIR-V)
+*.spv
+
 # IDE files
 .vscode/
 .idea/

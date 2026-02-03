@@ -3,6 +3,7 @@
 #include <chrono>
 #include "Camera.h"
 #include "InputHandler.h"
+#include "Config.h"
 
 // TODO: Include user's Vulkan rendering pipeline headers here
 
@@ -36,8 +37,8 @@ Application::Application()
     : m_window(nullptr)
     , m_camera(nullptr)
     , m_input(nullptr)
-    , m_window_width(1280)
-    , m_window_height(720)
+    , m_window_width(config::DEFAULT_WINDOW_WIDTH)
+    , m_window_height(config::DEFAULT_WINDOW_HEIGHT)
     , m_running(true)
 {
 }
@@ -58,7 +59,7 @@ bool Application::initialize() {
     
     // Create window
     m_window = glfwCreateWindow(m_window_width, m_window_height, 
-                                 "Cats vs Dogs... vs Chickens", nullptr, nullptr);
+                                 config::WINDOW_TITLE, nullptr, nullptr);
     if (!m_window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -70,10 +71,10 @@ bool Application::initialize() {
     
     // Initialize camera
     m_camera = new Camera();
-    m_camera->set_perspective(1.0472f, // 60 degrees FOV
+    m_camera->set_perspective(config::DEFAULT_FOV,
                              static_cast<float>(m_window_width) / m_window_height,
-                             0.1f,    // Near plane
-                             1000.0f); // Far plane
+                             config::CAMERA_NEAR_PLANE,
+                             config::CAMERA_FAR_PLANE);
     
     // TODO: Initialize Vulkan rendering pipeline here
     // - Create Vulkan instance
@@ -177,7 +178,7 @@ void Application::run() {
         last_time = current_time;
         
         // Limit delta time to prevent large jumps
-        if (delta_time > 0.1f) delta_time = 0.1f;
+        if (delta_time > config::MAX_DELTA_TIME) delta_time = config::MAX_DELTA_TIME;
         
         process_input(delta_time);
         update(delta_time);
