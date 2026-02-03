@@ -1,62 +1,52 @@
-# Cats vs Dogs... vs Chickens - Makefile
-# Build system for the RTS game
+CXX			:= c++
+CXXFLAGS	:= -std=c++23 -Wall -Wextra -Werror
+INCLUDE 	:=	-I./include \
+				-I/opt/homebrew/include \
 
-# Compiler and flags
-CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -I./include -I./lib
-LDFLAGS := -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
+LFLAGS		=	-L/opt/homebrew/lib -lglfw -framework Cocoa -framework IOKit -framework OpenGL
 
-# Directories
-SRC_DIR := src
-BUILD_DIR := build
-OBJ_DIR := $(BUILD_DIR)/obj
+SRC_DIR		:= src
+BUILD_DIR	:= build
+OBJ_DIR		:= $(BUILD_DIR)/obj
 
-# Target executable
-TARGET := $(BUILD_DIR)/rts_game
+TARGET := $(BUILD_DIR)/CatsVSDogs
 
-# Source files
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
-# Default target
+ifeq ($(UNAME_S), Linux)
+	INCLUDES += -isystem $(USER)/.capt/root/usr/include
+	LFLAGS = -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl `pkg-config --static --libs glfw3`
+	BASE_CPPFLAGS += `pkg-config --cflags glfw3`
+endif
+
 all: $(TARGET)
 
-# Debug build
 debug: CXXFLAGS += -g -O0 -DDEBUG
 debug: clean $(TARGET)
 
-# Release build
 release: CXXFLAGS += -O3 -DNDEBUG
 release: clean $(TARGET)
 
-# Link executable
-$(TARGET): $(OBJECTS)
-	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
-	@echo "Build complete: $(TARGET)"
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+	mkdir -p $(OBJ_DIR)
 
-# Compile source files
+$(TARGET): $(BUILD_DIR) $(OBJECTS)
+	$(CXX) $(OBJECTS) $(INCLUDE) -o $(TARGET) $(LDFLAGS)
+
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
-# Clean build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
-	@echo "Clean complete"
 
-# Run the application
+fclean: clean
+	rm -f $(TARGET)
+
 run: $(TARGET)
 	./$(TARGET)
 
-# Install dependencies (Ubuntu/Debian)
-install-deps:
-	@echo "Installing dependencies..."
-	sudo apt-get update
-	sudo apt-get install -y build-essential libglfw3-dev libvulkan-dev vulkan-tools
-
-# Print variables for debugging
-print-%:
-	@echo $* = $($*)
+re: fclean all
 
 .PHONY: all debug release clean run install-deps
