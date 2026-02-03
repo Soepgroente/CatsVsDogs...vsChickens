@@ -4,10 +4,9 @@ This directory will contain Vulkan shader files (GLSL source and compiled SPIR-V
 
 ## Planned Shaders
 
-- **vertex.vert**: Basic vertex shader for 3D geometry
-- **fragment.frag**: Basic fragment shader with lighting
-- **grid.vert/frag**: Shader for ground grid rendering
-- **ui.vert/frag**: Shaders for UI rendering
+- **basic.vert/frag**: Basic vertex and fragment shaders for 3D geometry with lighting
+- **grid.vert/frag**: Shaders for ground grid rendering
+- **ui.vert/frag**: Shaders for UI rendering (to be added)
 
 ## Compilation
 
