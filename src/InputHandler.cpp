@@ -104,6 +104,8 @@ float InputHandler::get_scroll_delta() const {
 }
 
 void InputHandler::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    (void)window;  // Unused
+    (void)xoffset; // Only using vertical scroll for now
     if (s_instance) {
         s_instance->m_scroll_delta = static_cast<float>(yoffset);
     }

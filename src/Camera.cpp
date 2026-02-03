@@ -28,6 +28,7 @@ Camera::~Camera() {
 }
 
 void Camera::update(float delta_time) {
+    (void)delta_time; // Unused for now - reserved for future smooth interpolation
     // Camera movement is handled via pan/rotate/zoom methods called from input
     // This method can be used for smooth interpolation or camera shake in the future
 }
