@@ -6,7 +6,9 @@
  */
 
 namespace rts {
-namespace config {
+
+namespace config
+{
 
 // Window settings
 constexpr int DEFAULT_WINDOW_WIDTH = 1280;
@@ -25,13 +27,10 @@ constexpr float CAMERA_DEFAULT_PITCH = 0.785398f; // ~45 degrees for isometric v
 // Movement speeds
 constexpr float CAMERA_PAN_SPEED = 10.0f;
 constexpr float CAMERA_ROTATION_SPEED = 1.5f;
-constexpr float CAMERA_ZOOM_SPEED = 5.0f;
+constexpr float CAMERA_ZOOSPEED = 5.0f;
 
 // Game settings
 constexpr float MAX_DELTA_TIME = 0.1f;          // Cap delta time to prevent large jumps
-
-// Vulkan settings
-constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
 // TODO: Add settings for:
 // - Unit selection
