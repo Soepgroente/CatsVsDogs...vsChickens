@@ -39,7 +39,7 @@ static std::vector<std::unique_ptr<ve::VulkanBuffer>>	createUboBuffers(ve::Vulka
 {
 	std::vector<std::unique_ptr<ve::VulkanBuffer>>	buffers(ve::VulkanSwapChain::MAX_FRAMES_IN_FLIGHT);
 
-	for (size_t i = 0; i < uboBuffers.size(); i++)
+	for (size_t i = 0; i < buffers.size(); i++)
 	{
 		buffers[i] = std::make_unique<ve::VulkanBuffer>(
 			vulkanDevice,
@@ -73,10 +73,10 @@ std::vector<VkDescriptorSet>	CatsVsDogs::createGlobalDescriptorSets(
 		VkDescriptorImageInfo	imageInfo{};
 
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageInfo.imageView = texture.getImageView();
-		imageInfo.sampler = texture. getSampler();
+		// imageInfo.imageView = texture.getImageView();
+		// imageInfo.sampler = texture.getSampler();
 
-		VulkanDescriptorWriter(descriptorSetLayout, descriptorPool)
+		ve::VulkanDescriptorWriter(descriptorSetLayout, globalDescriptorPool)
 			.writeBuffer(0, &bufferInfo)
 			.writeImage(1, &imageInfo)
 			.build(globalDescriptorSets[i]);
@@ -94,12 +94,12 @@ void	CatsVsDogs::run()
 	
 	float	elapsedTime = 0.0f;
 	float	aspectRatio = 1.0f;
-	std::chrono::high_resolution_clock::time_point	currentTime, newTime;
+	// std::chrono::high_resolution_clock::time_point	currentTime, newTime;
 	VkCommandBuffer	commandBuffer = nullptr;
 	ve::VulkanObject	viewerObject = ve::VulkanObject::createVulkanObject();
-	size_t			frameCount = 0;
+	// size_t			frameCount = 0;
 
-	currentTime = std::chrono::high_resolution_clock::now();
+	// currentTime = std::chrono::high_resolution_clock::now();
 	viewerObject.transform.translation = {0.0f, 0.0f, -10.0f};
 	ve::FrameInfo	info
 	{
@@ -116,9 +116,9 @@ void	CatsVsDogs::run()
 	while (vulkanWindow.shouldClose() == false)
 	{
 		glfwPollEvents();
-		newTime = std::chrono::high_resolution_clock::now();
-		elapsedTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
-		currentTime = newTime;
+		// newTime = std::chrono::high_resolution_clock::now();
+		// elapsedTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+		// currentTime = newTime;
 		camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 		aspectRatio = vulkanRenderer.getAspectRatio();
 		camera.setPerspective(radians(50.0f), aspectRatio, 0.1f, 1000.0f);
@@ -132,21 +132,19 @@ void	CatsVsDogs::run()
 			info.frameIndex = frameIndex;
 			info.commandBuffer = commandBuffer;
 			info.globalDescriptorSet = globalDescriptorSets[frameIndex];
-			info.useTexture = keyboardInput.shouldShowTextures(frameCount, info.useTexture);
-			info.rotateModel = keyboardInput.shouldRotate(frameCount, info.rotateModel);
 			ubo.projectionView = camera.getProjectionMatrix() * camera.getViewMatrix();
 			uboBuffers[frameIndex]->writeToBuffer(&ubo);
 			uboBuffers[frameIndex]->flush();
 
 			vulkanRenderer.beginSwapChainRenderPass(commandBuffer);
 			renderSystem.renderObjects(info);
-			newTime = std::chrono::high_resolution_clock::now();
-			std::cout << "\rFrames per second: " << static_cast<int> (1.0f / elapsedTime) << ", Frame time: ";
-			std::cout << std::chrono::duration<float, std::chrono::milliseconds::period>(newTime - currentTime).count() << "ms " << std::flush;		
+			// newTime = std::chrono::high_resolution_clock::now();
+			// std::cout << "\rFrames per second: " << static_cast<int> (1.0f / elapsedTime) << ", Frame time: ";
+			// std::cout << std::chrono::duration<float, std::chrono::milliseconds::period>(newTime - currentTime).count() << "ms " << std::flush;
 			vulkanRenderer.endSwapChainRenderPass(commandBuffer);
 			vulkanRenderer.endFrame();
 		}
-		frameCount++;
+		// frameCount++;
 	}
 	vkDeviceWaitIdle(vulkanDevice.device());
 }

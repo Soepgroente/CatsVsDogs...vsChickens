@@ -2,8 +2,8 @@ CXX			:= c++
 CXXFLAGS	:= -std=c++20 -Wall -Wextra -Werror
 INCLUDE 	:=	-I ./include \
 				-I /opt/homebrew/include \
-				-I ./vulkan \
-				-I ./vectors \
+				-I ./lib/vulkan \
+				-I ./lib/vectors \
 
 LDFLAGS		=	-L/opt/homebrew/lib -lglfw -framework Cocoa -framework IOKit -framework OpenGL
 

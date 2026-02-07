@@ -1,8 +1,6 @@
 #include "Camera.hpp"
 #include <cmath>
 
-namespace rts {
-
 Camera::Camera()
 	: position(0.0f, -10.0f, 8.0f)
 	, target(0.0f, 0.0f, 0.0f)
@@ -11,17 +9,17 @@ Camera::Camera()
 	, rotation(0.0f)
 	, pitch(0.785398f)  // ~45 degrees for isometric-ish view
 	, fov(1.0472f)      // 60 degrees in radians
-	, aspect_ratio(16.0f / 9.0f)
-	, near_plane(0.1f)
-	, far_plane(1000.0f)
-	, pan_speed(10.0f)
-	, rotation_speed(1.5f)
-	, zoospeed(5.0f)
-	, min_distance(5.0f)
-	, max_distance(50.0f)
+	, aspectRatio(16.0f / 9.0f)
+	, nearPlane(0.1f)
+	, farPlane(1000.0f)
+	, panSpeed(10.0f)
+	, rotationSpeed(1.5f)
+	, zoomSpeed(5.0f)
+	, minDistance(5.0f)
+	, maxDistance(50.0f)
 {
-	update_view_matrix();
-	// projection_matrix = mat4::perspective(fov, aspect_ratio, near_plane, far_plane);
+	updateViewMatrix();
+	// projection_matrix = mat4::perspective(fov, aspectRatio, nearPlane, farPlane);
 }
 
 void	Camera::update(float delta_time)
@@ -34,22 +32,22 @@ void	Camera::update(float delta_time)
 void	Camera::pan(float dx, float dy)
 {
 	// Pan in world space, accounting for current rotation
-	float cos_rot = cosf(rotation);
-	float sin_rot = sinf(rotation);
+	float cosRot = cosf(rotation);
+	float sinRot = sinf(rotation);
 	
 	// Transform movement based on camera rotation
-	float world_dx = dx * cos_rot - dy * sin_rot;
-	float world_dy = dx * sin_rot + dy * cos_rot;
+	float worldDx = dx * cosRot - dy * sinRot;
+	float worldDy = dx * sinRot + dy * cosRot;
 	
-	target.x += world_dx;
-	target.y += world_dy;
+	target.x += worldDx;
+	target.y += worldDy;
 	
-	update_view_matrix();
+	updateViewMatrix();
 }
 
-void	Camera::rotate(float angle_delta)
+void	Camera::rotate(float angleDelta)
 {
-	rotation += angle_delta;
+	rotation += angleDelta;
 
 	while (rotation < 0.0f)
 	{
@@ -60,52 +58,57 @@ void	Camera::rotate(float angle_delta)
 		rotation = std::fmod(rotation, two_pi());
 	}
 	
-	update_view_matrix();
+	updateViewMatrix();
 }
 
 void	Camera::zoom(float delta)
 {
-	distance = std::clamp(distance - delta, min_distance, max_distance);	
-	update_view_matrix();
+	distance = std::clamp(distance - delta, minDistance, maxDistance);	
+	updateViewMatrix();
 }
 
-void	Camera::setPerspective(float fov, float aspect_ratio, float near_plane, float far_plane)
+void	Camera::setPerspective(float fov, float aspectRatio, float nearPlane, float farPlane)
 {
 	this->fov = fov;
-	this->aspect_ratio = aspect_ratio;
-	this->near_plane = near_plane;
-	this->far_plane = far_plane;
+	this->aspectRatio = aspectRatio;
+	this->nearPlane = nearPlane;
+	this->farPlane = farPlane;
 	
-	// projection_matrix = mat4::perspective(fov, aspect_ratio, near_plane, far_plane);
+	// projection_matrix = mat4::perspective(fov, aspectRatio, nearPlane, farPlane);
 }
 
-void	Camera::set_position(const vec3& position)
+void	Camera::setViewYXZ(const vec3& position, const vec3& rotation)
 {
 	this->position = position;
-	update_view_matrix();
+	(void)rotation;
+	updateViewMatrix();
 }
 
-void	Camera::set_target(const vec3& target)
+void	Camera::setPosition(const vec3& position)
+{
+	this->position = position;
+	updateViewMatrix();
+}
+
+void	Camera::setTarget(const vec3& target)
 {
 	this->target = target;
-	update_view_matrix();
+	updateViewMatrix();
 }
 
-void	Camera::update_view_matrix()
+void	Camera::updateViewMatrix()
 {
 	// Calculate camera position based on target, distance, rotation, and pitch
-	float	cos_pitch = cosf(pitch);
-	float	sin_pitch = sinf(pitch);
-	float	cos_rot = cosf(rotation);
-	float	sin_rot = sinf(rotation);
+	float	cosPitch = cosf(pitch);
+	float	sinPitch = sinf(pitch);
+	float	cosRot = cosf(rotation);
+	float	sinRot = sinf(rotation);
 	
 	// Position camera at distance from target
-	position.x = target.x - distance * cos_pitch * sin_rot;
-	position.y = target.y - distance * cos_pitch * cos_rot;
-	position.z = target.z + distance * sin_pitch;
+	position.x = target.x - distance * cosPitch * sinRot;
+	position.y = target.y - distance * cosPitch * cosRot;
+	position.z = target.z + distance * sinPitch;
 	
 	// Create view matrix looking at target
 	// view_matrix = mat4::look_at(position, target, up);
 }
-
-} // namespace rts

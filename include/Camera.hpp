@@ -2,8 +2,6 @@
 
 #include "Vectors.hpp"
 
-namespace rts {
-
 /**
  * Camera System for 2.5D RTS
  * 
@@ -23,29 +21,30 @@ class Camera
 	Camera(const Camera&) = delete;
 	Camera& operator=(const Camera&) = delete;
 
-	void	update(float delta_time);
+	void	update(float deltaTime);
 	void	pan(float dx, float dy);
-	void	rotate(float angle_delta);
+	void	rotate(float angleDelta);
 	void	zoom(float delta);
 	
-	const mat4&	get_view_matrix() const { return view_matrix; }
-	const mat4&	get_projection_matrix() const { return projection_matrix; }
-	const vec3&	get_position() const { return position; }
-	const vec3&	get_target() const { return target; }
+	const mat4&	getViewMatrix() const { return viewMatrix; }
+	const mat4&	getProjectionMatrix() const { return projectionMatrix; }
+	const vec3&	getPosition() const { return position; }
+	const vec3&	getTarget() const { return target; }
 
-	void	setPerspective(float fov, float aspect_ratio, float near_plane, float far_plane);
-	void	set_position(const vec3& position);
-	void	set_target(const vec3& target);
+	void	setPerspective(float fov, float aspectRatio, float nearPlane, float farPlane);
+	void	setPosition(const vec3& position);
+	void	setViewYXZ(const vec3& position, const vec3& rotation);
+	void	setTarget(const vec3& target);
 
-	float	get_distance() const { return distance; }
-	float	get_rotation() const { return rotation; }
-	void	set_pan_speed(float speed) { pan_speed = speed; }
-	void	set_rotation_speed(float speed) { rotation_speed = speed; }
-	void	set_zoospeed(float speed) { zoospeed = speed; }
+	float	getDistance() const { return distance; }
+	float	getRotation() const { return rotation; }
+	void	setPanSpeed(float speed) { panSpeed = speed; }
+	void	setRotationSpeed(float speed) { rotationSpeed = speed; }
+	void	setZoomSpeed(float speed) { zoomSpeed = speed; }
 	
 	private:
 
-	void	update_view_matrix();
+	void	updateViewMatrix();
 	
 	vec3	position;
 	vec3	target;
@@ -57,20 +56,18 @@ class Camera
 	
 	// Projection parameters
 	float	fov;
-	float	aspect_ratio;
-	float	near_plane;
-	float	far_plane;
+	float	aspectRatio;
+	float	nearPlane;
+	float	farPlane;
 	
 	// Movement parameters
-	float	pan_speed;
-	float	rotation_speed;
-	float	zoospeed;
+	float	panSpeed;
+	float	rotationSpeed;
+	float	zoomSpeed;
 
-	float	min_distance;
-	float	max_distance;
+	float	minDistance;
+	float	maxDistance;
 
-	mat4	view_matrix;
-	mat4	projection_matrix;
+	mat4	viewMatrix;
+	mat4	projectionMatrix;
 };
-
-} // namespace rts
